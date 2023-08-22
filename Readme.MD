@@ -1,3 +1,2 @@
 # AWS Tools
-
-- (Sagemaker Auto scaling tool)[sageMakerAutoScaling/Readme.md]
+- [SageMaker auto scaling tool](https://github.com/RichardLeeY/awsTools/blob/main/sageMakerAutoScaling)
