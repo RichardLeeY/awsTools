@@ -1,8 +1,7 @@
 # this script will create health check for shield protection
-# It assume that you have create cloudfront distribution and create shield protection on this distribution.
+# It assume that you have created cloudfront distribution and created shield protection on this distribution.
 # This script will create alarm for 5xxErrorRate and create health check for shield protection.
 # example: ./shield_healthcheck4CF.sh  E3FVLTLHTOU77K
-# add -h for help
 if [ "$1" == "-h" ]
 then
   echo "Usage: ./shield_healthcheck4CF.sh E3FVLTLHTOU77K"
