@@ -1,17 +1,17 @@
 # this script will create health check for shield protection
 # It assume that you have create cloudfront distribution and create shield protection on this distribution.
 # This script will create alarm for 5xxErrorRate and create health check for shield protection.
-# example: ./shield_healthcheck4CF.sh  E1HONFQO85PVWT
+# example: ./shield_healthcheck4CF.sh  E3FVLTLHTOU77K
 # add -h for help
 if [ "$1" == "-h" ]
 then
-  echo "Usage: ./shield_healthcheck4CF.sh cf-distributionid"
+  echo "Usage: ./shield_healthcheck4CF.sh E3FVLTLHTOU77K"
    exit 1
 fi
 if [ -z "$1" ]
 then
   echo "No CloudFront distribution ID supplied"
-  echo "Usage: ./shield_healthcheck4CF.sh cf-distributionid"
+  echo "Usage: ./shield_healthcheck4CF.sh E3FVLTLHTOU77K"
   exit 1
 fi
 
@@ -41,7 +41,7 @@ aws cloudwatch put-metric-alarm \
 # get current time with yyyy-mm-dd-mi-ss format
 # example: 2020-01-01-00-00-00
 currenttime=`date +%Y-%m-%d-%H-%M-%S`
-echo $currenttime
+echo "caller-reference:"$currenttime
 
 # 2. create health check
 healthid=`aws route53 create-health-check \
@@ -56,8 +56,13 @@ healthid=`aws route53 create-health-check \
     },
     "InsufficientDataHealthStatus": "LastKnownStatus"
 }' | jq -r '.HealthCheck.Id' `
-# list shield protection and find protectionid with distributionid
-protectionid=` aws shield list-protections | jq -r '.Protections[] | select(.Name == "'$distributionid'") | .Id' `
+echo "healthid:'$healthid'"
+# list shield protection and find protectionid that ResourceArn like  distributionid
+
+
+protectionid=` aws shield list-protections | jq -r '.Protections[] | select(.ResourceArn|contains("'${distributionid}'"))|.Id' `
 echo "protectionid:'$protectionid'"
 # 3. associate health check with Shield protection.
-aws shield associate-health-check --protection-id  $protectionid --health-check-arn $healthid
+healthcheckArn='arn:aws:route53:::healthcheck/'$healthid
+echo "healthcheckArn:'$healthcheckArn'"
+aws shield associate-health-check --protection-id  $protectionid --health-check-arn $healthcheckArn
