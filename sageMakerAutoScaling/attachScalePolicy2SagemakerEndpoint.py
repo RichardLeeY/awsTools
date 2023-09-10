@@ -29,7 +29,7 @@ def addscalePolicyZERO(endpoint_name,resource_id):
         ServiceNamespace='sagemaker',
         ResourceId=resource_id,
         ScalableDimension='sagemaker:variant:DesiredInstanceCount',
-        MinCapacity=1,
+        MinCapacity=0,
         MaxCapacity=10
     )
         
@@ -85,7 +85,7 @@ def addscalePolicyZERO(endpoint_name,resource_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--endpointname', required=True, help='Sagemaker Endpoint name')
+    parser.add_argument('--endpointname', required=True, help='SageMaker Endpoint name')
     args = parser.parse_args()
     endpoint_name = args.endpointname
     # get sagemaker endpoint configuration by endpoint name
